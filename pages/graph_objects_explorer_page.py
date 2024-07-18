@@ -22,28 +22,17 @@ MAIN_DIV_CHILDREN = [
     dbc.Row([dbc.Col([
         html.H1(f"This is the '{link_name}' page", style=styles.heading_style)
     ])]),
-    dbc.Row([
-        dbc.Popover([dbc.PopoverBody(
-            "Click and select one available graphical object to explore. " +
-            "Click any cell to access the web documentation if available.")],
-            target="graphic_objects", trigger="hover", placement="top",
-            style=styles.popover_style),
-        dbc.Col([dbc.Accordion([dbc.AccordionItem([dbc.RadioItems(
-            options=[
-                {"label": key, "value": key}
-                for _, key in enumerate(fig_u.GO_INFO)
-            ],
-            id='checklist', inline=True, switch=False,
-            style=styles.radioitems_style
-        ),], title=styles.style_accordionitem_title(
-            "Available graphic objects"), style=styles.accordionitem_style
-        )],
-            start_collapsed=True, flush=False, style=styles.accordion_style,
-            id='graphic_objects'
-        )],
-        )],
+    html.Hr(),
+    dbc.Row([dbc.Col([dbc.RadioItems(
+        options=[
+            {"label": key, "value": key}
+            for _, key in enumerate(fig_u.GO_INFO)],
+        id='checklist', inline=True, switch=False,
+        style=styles.radioitems_style
     ),
+    ])]),
     dcc.Store(id='store', data={'count': 0}),
+    html.Hr(),
     html.Div(id='container'),
 ]
 
@@ -78,101 +67,96 @@ def create_labeled_range_slider_column(
         dcc.RangeSlider(
             id=slider_id, value=[min_val, 500], min=min_val, step=1,
             allowCross=False, pushable=pushable_val, marks=None, tooltip={
-                "placement": "topLeft", "always_visible": True,
+                "placement": "bottomLeft", "always_visible": True,
                 "style": {"fontSize": "14px"}}),
     ], xs=12, md={"size": 4})
     return labeled_range_slider_column
 
 
-def create_filter_controls_accordion(index_id: int = 0) -> dbc.Row:
+def create_three_level_filter_row(instance_id: int = 0) -> dbc.Row:
     """
-    Create an accordion with filter controls for property documentation.
+    Create a row with three-level filter controls for property documentation.
 
-    This function generates a Dash Bootstrap accordion component that includes:
-    - A popover with usage instructions
-    - Three range sliders for filtering Level 1, 2, and 3 items
-    - A sort switch
-
-    The accordion is collapsible and styled using predefined styles.
+    This function generates a set of three range sliders for filtering
+    items at different levels of detail.
+    The sliders are arranged vertically in a column.
 
     Args:
-        index_id (int, optional): Index used for component IDs. Defaults to 0.
-
-    Returns:
-        dbc.Row: A Dash Bootstrap row containing the accordion with filter
-                 controls.
-    """
-    popover = dbc.Popover(
-        dbc.PopoverBody(
-            "Adjust the controls to find faster properties documentation."),
-        target={'type': 'accordion_item_options', 'index': index_id},
-        trigger="hover", placement="top", style=styles.popover_style)
-
-    labeled_range_sliders_column = dbc.Col([dbc.Row([
-        create_labeled_range_slider_column(
-            {'type': 'slider_1', 'index': index_id}, 'Level 1 items', 1, 1),
-        create_labeled_range_slider_column(
-            {'type': 'slider_2', 'index': index_id}, 'Level 2 items'),
-        create_labeled_range_slider_column(
-            {'type': 'slider_3', 'index': index_id}, 'Level 3 items'),
-    ])], xs=12, md={"size": 11})
-
-    sort_switch_column = dbc.Col([dbc.Row([dbc.Col([html.Div([
-        dbc.Label("Sort"),
-        dbc.Switch({'type': 'sort_switch', 'index': index_id}, value=True)])
-    ], className="d-flex justify-content-center align-items-center")
-    ])], xs=12, md={"size": 1})
-
-    filter_controls_accordion = dbc.Row([
-        dbc.Col([dbc.Accordion([dbc.AccordionItem([dbc.Row([
-            popover, labeled_range_sliders_column, sort_switch_column]),
-        ], id={'type': 'accordion_item_options', 'index': index_id},
-            style=styles.accordionitem_style)
-        ], start_collapsed=True, flush=False, style=styles.accordion_style)
-        ])])
-    return filter_controls_accordion
-
-
-def create_color_theme_controls_accordion(index_id: int = 0):
-    """
-    Create an accordion with color theme controls.
-
-    This function generates a Dash Bootstrap accordion component that includes:
-    - A popover with instructions for color theme selection
-    - A switch to reverse colors
-    - Radio buttons to select from predefined color scales
-
-    The accordion is collapsible and styled using predefined styles.
-
-    Args:
-        index_id (int, optional): Index used for component IDs. Defaults to 0.
+        instance_id (int, optional): Unique identifier used to create distinct
+            component IDs for each instance of these controls. Defaults to 0.
 
     Returns:
         dbc.Row:
-            A Dash Bootstrap row containing the accordion with color theme
-            controls.
+            A Dash Bootstrap row containing the three-level filter controls.
+            The row includes:
+            - A column with three labeled range sliders for Level 1, 2, and 3
+              items.
+            - A horizontal line separator below the sliders.
     """
-    color_theme_controls_accordion = dbc.Row([
-        dbc.Popover([dbc.PopoverBody(
-            "Select another color theme."),],
-            target={'type': 'accordion_item_theme', 'index': index_id},
-            trigger="hover", placement="top", style=styles.popover_style),
-        dbc.Col([dbc.Accordion([dbc.AccordionItem([
-            html.Div([dbc.Switch(
-                id={'type': 'reverse_colors_switch', 'index': index_id},
-                label="Reverse colors", value=False
-            )], className="d-md-flex justify-content-md-center"),
-            dbc.RadioItems([
-                {"label": colorscale, "value": colorscale}
-                for colorscale in fig_u.MARKER_COLORSCALE],
-                id={'type': 'checklist_colorscale', 'index': index_id},
-                value="sunsetdark", inline=True, switch=False,
-                style=styles.radioitems_style)
-        ], id={'type': 'accordion_item_theme', 'index': index_id},
-            style=styles.accordionitem_style),
-        ], start_collapsed=True, flush=False, style=styles.accordion_style)])
+    level_sliders_column = dbc.Col([dbc.Row([
+        create_labeled_range_slider_column(
+            {'type': 'slider_1', 'index': instance_id}, 'Level 1 items', 1, 1),
+        create_labeled_range_slider_column(
+            {'type': 'slider_2', 'index': instance_id}, 'Level 2 items'),
+        create_labeled_range_slider_column(
+            {'type': 'slider_3', 'index': instance_id}, 'Level 3 items'),
     ])
-    return color_theme_controls_accordion
+    ], xs=12, md={"size": 12})
+
+    three_level_filter_row = dbc.Row([dbc.Col([
+        dbc.Row([level_sliders_column]), html.Hr()])])
+
+    return three_level_filter_row
+
+
+def create_color_theme_controls_row(instance_id: int = 0) -> dbc.Row:
+    """
+    Create a row with color theme controls for property documentation.
+
+    This function generates a Dash Bootstrap row component that includes:
+    - Two switches:
+      1. Sort switch: Toggles sorting of graph items (e.g., by value or name)
+      2. Color reverse switch: Flips the direction of the selected color scale
+    - Radio buttons to select from predefined color scales
+
+    Args:
+        instance_id (int, optional): Unique identifier used to create distinct
+            component IDs for each instance of these controls. Defaults to 0.
+
+    Returns:
+        dbc.Row: A Dash Bootstrap row containing the color theme controls.
+            The row includes:
+            - A column with two switches for sorting and color reversal
+            - A column with radio buttons for color scale selection
+    """
+    switches_column = dbc.Col([html.Div([
+        dbc.Label("Sort graph items", className="mb-2 text-center"),
+        html.Div([dbc.Switch(
+            {'type': 'sort_switch', 'index': instance_id}, value=True)
+        ], className="d-flex justify-content-center"),
+        html.Br(),
+        dbc.Label("Reverse colors", className="mb-2 text-center"),
+        html.Div([dbc.Switch(
+            {'type': 'reverse_colors_switch', 'index': instance_id},
+            value=False)
+        ], className="d-flex justify-content-center")
+    ], className=styles.CENTER_DIV_CONTENT)
+    ], xs=4, md=2)
+
+    radioitems_column = dbc.Col([
+        html.Div([
+            dbc.Label("Colorscales", className="mb-2 text-center")
+        ], className="d-flex justify-content-center"),
+        dbc.RadioItems([
+            {"label": colorscale, "value": colorscale}
+            for colorscale in fig_u.MARKER_COLORSCALE
+        ], value="sunsetdark",
+            id={'type': 'checklist_colorscale', 'index': instance_id},
+            inline=True, switch=False, style=styles.radioitems_style)
+    ], xs=8, md=10)
+
+    color_theme_controls_row = dbc.Row([switches_column, radioitems_column])
+    return color_theme_controls_row
 
 
 def create_main_controls_accordion(index_id: int = 0):
@@ -203,8 +187,8 @@ def create_main_controls_accordion(index_id: int = 0):
         dcc.Store(
             id={'type': 'store_split', 'index': index_id}, data=None),
         dbc.Accordion([dbc.AccordionItem([
-            create_filter_controls_accordion(),
-            create_color_theme_controls_accordion()],
+            create_three_level_filter_row(),
+            create_color_theme_controls_row()],
             style={'display': 'none'},
             id={'type': 'accordion_item', 'index': index_id},
         )], start_collapsed=True, flush=False, style=styles.accordion_style),
@@ -317,9 +301,8 @@ def display_components(data: Dict[str, Any]) -> List[html.Div]:
         raise PreventUpdate
 
     children.append(html.Div([
-        create_main_controls_accordion(),
-        create_graph_and_iframe_section()
-    ]))
+        create_main_controls_accordion(), html.Hr(),
+        create_graph_and_iframe_section(), html.Hr()]))
     return children
 
 
@@ -574,8 +557,6 @@ def update_click_data_display(
     Output({'type': 'slider_1', 'index': MATCH}, 'max'),
     Output({'type': 'accordion_item', 'index': MATCH}, 'style'),
     Output({'type': 'accordion_item', 'index': MATCH}, 'title'),
-    Output({'type': 'accordion_item_theme', 'index': MATCH}, 'title'),
-    Output({'type': 'accordion_item_options', 'index': MATCH}, 'title'),
     Input({'type': 'treemap', 'index': MATCH}, 'figure'),
     State({'type': 'store_len_lev_1', 'index': MATCH}, 'data'),
     State('checklist', 'value')
@@ -606,13 +587,9 @@ def update_accordion_and_slider_based_on_treemap(
     obj_class_name = fig_u.GO_INFO[checklist]['object'].__class__.__name__
     main_title = styles.style_accordionitem_title(
         f"Options for {obj_class_name} object")
-    theme_title = styles.style_accordionitem_title(
-        f"Theme for {obj_class_name} object", font_size=18)
-    options_title = styles.style_accordionitem_title(
-        f"Options for {obj_class_name} figure", font_size=18)
     accordion_item_style = styles.accordionitem_style
     accordion_item_style.update({'display': ''})
-    return store, accordion_item_style, main_title, theme_title, options_title
+    return store, accordion_item_style, main_title
 
 
 # graph_objs_list = [

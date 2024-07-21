@@ -9,11 +9,14 @@ accordionitem_style = {"border": "2px solid #abc", "border-radius": "5px"}
 
 accordion_style = {"width": "100%", "margin": "5px auto"}
 
-radioitems_style = {"max-height": "200px", "overflow-y": "auto"}
+radioitems_style = {"max-height": "250px", "overflow-y": "auto"}
 
 popover_style = {
     "max-width": "440px", "border-radius": "10px",
     "font-size": "16px", "font-family": "Roboto"}
+
+CENTER_DIV_CONTENT = \
+    "d-flex flex-column justify-content-center align-items-center h-100"
 
 
 def style_accordionitem_title(title: str, font_size: int = 24):

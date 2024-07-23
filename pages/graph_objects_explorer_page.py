@@ -101,62 +101,22 @@ def create_three_level_filter_row(instance_id: int = 0) -> dbc.Row:
         create_labeled_range_slider_column(
             {'type': 'slider_3', 'index': instance_id}, 'Level 3 items'),
     ])
-    ], xs=12, md={"size": 12})
+    ], xs=12, md={"size": 10})
+
+    switch_column = dbc.Col([
+        dbc.Label("Sort graph items", className="mb-2 text-center"),
+        html.Div([
+            dbc.Switch(
+                {'type': 'sort_switch', 'index': instance_id},
+                value=True
+            )
+        ], className="d-flex justify-content-center")
+    ], xs=12, md=2, className="d-flex flex-column align-items-center")
 
     three_level_filter_row = dbc.Row([dbc.Col([
-        dbc.Row([level_sliders_column]), html.Hr()])])
+        dbc.Row([level_sliders_column, switch_column])])])
 
     return three_level_filter_row
-
-
-def create_color_theme_controls_row(instance_id: int = 0) -> dbc.Row:
-    """
-    Create a row with color theme controls for property documentation.
-
-    This function generates a Dash Bootstrap row component that includes:
-    - Two switches:
-      1. Sort switch: Toggles sorting of graph items (e.g., by value or name)
-      2. Color reverse switch: Flips the direction of the selected color scale
-    - Radio buttons to select from predefined color scales
-
-    Args:
-        instance_id (int, optional): Unique identifier used to create distinct
-            component IDs for each instance of these controls. Defaults to 0.
-
-    Returns:
-        dbc.Row: A Dash Bootstrap row containing the color theme controls.
-            The row includes:
-            - A column with two switches for sorting and color reversal
-            - A column with radio buttons for color scale selection
-    """
-    switches_column = dbc.Col([html.Div([
-        dbc.Label("Sort graph items", className="mb-2 text-center"),
-        html.Div([dbc.Switch(
-            {'type': 'sort_switch', 'index': instance_id}, value=True)
-        ], className="d-flex justify-content-center"),
-        html.Br(),
-        dbc.Label("Reverse colors", className="mb-2 text-center"),
-        html.Div([dbc.Switch(
-            {'type': 'reverse_colors_switch', 'index': instance_id},
-            value=False)
-        ], className="d-flex justify-content-center")
-    ], className=styles.CENTER_DIV_CONTENT)
-    ], xs=4, md=2)
-
-    radioitems_column = dbc.Col([
-        html.Div([
-            dbc.Label("Colorscales", className="mb-2 text-center")
-        ], className="d-flex justify-content-center"),
-        dbc.RadioItems([
-            {"label": colorscale, "value": colorscale}
-            for colorscale in fig_u.MARKER_COLORSCALE
-        ], value="sunsetdark",
-            id={'type': 'checklist_colorscale', 'index': instance_id},
-            inline=True, switch=False, style=styles.radioitems_style)
-    ], xs=8, md=10)
-
-    color_theme_controls_row = dbc.Row([switches_column, radioitems_column])
-    return color_theme_controls_row
 
 
 def create_main_controls_accordion(index_id: int = 0):
@@ -186,12 +146,10 @@ def create_main_controls_accordion(index_id: int = 0):
             id={'type': 'store_len_lev_1', 'index': index_id}, data=None),
         dcc.Store(
             id={'type': 'store_split', 'index': index_id}, data=None),
-        dbc.Accordion([dbc.AccordionItem([
-            create_three_level_filter_row(),
-            create_color_theme_controls_row()],
+        html.Div([
+            create_three_level_filter_row()],
             style={'display': 'none'},
-            id={'type': 'accordion_item', 'index': index_id},
-        )], start_collapsed=True, flush=False, style=styles.accordion_style),
+            id={'type': 'accordion_item', 'index': index_id},),
     ])])
     return main_controls_accordion
 
@@ -307,55 +265,11 @@ def display_components(data: Dict[str, Any]) -> List[html.Div]:
 
 
 @callback(
-    Output({'type': 'checklist_colorscale', 'index': MATCH}, 'value'),
-    Output({'type': 'checklist_colorscale', 'index': MATCH}, 'options'),
-    Input({'type': 'reverse_colors_switch', 'index': MATCH}, 'value'),
-    State({'type': 'checklist_colorscale', 'index': MATCH}, 'value'),
-    State({'type': 'checklist_colorscale', 'index': MATCH}, 'options'),
-)
-def update_colorscale_checklist(
-        switch_value: bool, checklist_value: str,
-        checklist_options: List[Dict[str, str]]
-) -> Tuple[str, List[Dict[str, str]]]:
-    """
-    Update the colorscale checklist based on the reverse colors switch.
-
-    This function modifies the checklist options and selected value to
-    reverse the colorscale when the switch is activated. It appends '_r' to
-    colorscale names to indicate reversal, or removes it when deactivated.
-
-    Args:
-        switch_value (bool): State of the reverse colors switch.
-        checklist_value (str): Currently selected colorscale value.
-        checklist_options (List[Dict[str, str]]):
-            List of dictionaries containing current checklist options.
-
-    Returns:
-        tuple[str, List[Dict[str, str]]]: Contains the following elements:
-            - str: Updated selected colorscale value.
-            - List[Dict[str, str]]: Updated list of checklist options.
-    """
-    def modify(main_string: str) -> str:
-        """Modify string based on switch state."""
-        return main_string + '_r' if switch_value else \
-            main_string.replace('_r', '')
-
-    new_checklist_options = [
-        {'label': modify(item['label']), 'value': modify(item['value'])}
-        for item in checklist_options]
-
-    new_checklist_value = modify(checklist_value)
-
-    return new_checklist_value, new_checklist_options
-
-
-@callback(
     Output({'type': 'treemap', 'index': MATCH}, 'figure'),
     Output({'type': 'treemap', 'index': MATCH}, 'style'),
     Output({'type': 'store_len_lev_1', 'index': MATCH}, 'data'),
     Output({'type': 'slider_2', 'index': MATCH}, 'max'),
     Output({'type': 'slider_3', 'index': MATCH}, 'max'),
-    Input({'type': 'checklist_colorscale', 'index': MATCH}, 'value'),
     Input('theme_switch_value_store', 'data'),
     Input({'type': 'store_split', 'index': MATCH}, 'data'),
     Input({'type': 'sort_switch', 'index': MATCH}, 'value'),
@@ -363,7 +277,7 @@ def update_colorscale_checklist(
     State('checklist', 'value')
 )
 def update_treemap_and_store(
-        checklist: str, switch: bool, split: Any, sort_switch: bool,
+        switch: bool, split: Any, sort_switch: bool,
         store_len_lev_1: int | None, main_checklist: str
 ) -> Tuple[go.Figure, Dict[str, str], int, int, int]:
     """
@@ -407,7 +321,8 @@ def update_treemap_and_store(
     treee_fig.update_traces(
         go.Treemap(
             parents=parents, labels=labels, ids=ids, textfont={"size": 18},
-            textposition="middle center", marker_colorscale=checklist,))
+            textposition="middle center", marker_colorscale='blues',
+        ))
 
     callback_count = \
         store_len_lev_1 if store_len_lev_1 is not None else len_levels[0]
@@ -556,13 +471,12 @@ def update_click_data_display(
 @callback(
     Output({'type': 'slider_1', 'index': MATCH}, 'max'),
     Output({'type': 'accordion_item', 'index': MATCH}, 'style'),
-    Output({'type': 'accordion_item', 'index': MATCH}, 'title'),
     Input({'type': 'treemap', 'index': MATCH}, 'figure'),
     State({'type': 'store_len_lev_1', 'index': MATCH}, 'data'),
     State('checklist', 'value')
 )
 def update_accordion_and_slider_based_on_treemap(
-        _: Any, store: int, checklist: str
+        _: Any, store: int, _checklist: str
 ) -> Tuple[int, Dict[str, Any], str, str, str]:
     """
     Update accordion items and range slider based on treemap selection.
@@ -584,12 +498,7 @@ def update_accordion_and_slider_based_on_treemap(
             - str: Title for the theme accordion item.
             - str: Title for the options accordion item.
     """
-    obj_class_name = fig_u.GO_INFO[checklist]['object'].__class__.__name__
-    main_title = styles.style_accordionitem_title(
-        f"Options for {obj_class_name} object")
-    accordion_item_style = styles.accordionitem_style
-    accordion_item_style.update({'display': ''})
-    return store, accordion_item_style, main_title
+    return store, {'display': ''}
 
 
 # graph_objs_list = [

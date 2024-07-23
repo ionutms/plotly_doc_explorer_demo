@@ -149,7 +149,7 @@ def create_main_controls_accordion(index_id: int = 0):
         html.Div([
             create_three_level_filter_row()],
             style={'display': 'none'},
-            id={'type': 'accordion_item', 'index': index_id},),
+            id={'type': 'div_item', 'index': index_id},),
     ])])
     return main_controls_accordion
 
@@ -235,17 +235,14 @@ def display_components(data: Dict[str, Any]) -> List[html.Div]:
     into a structured layout using Dash Bootstrap Components.
 
     Args:
-        data (Dict[str, Any]):
-            The current data stored in the 'store' component.
+        data: The current data stored in the 'store' component.
             Expected to contain a 'count' key.
 
     Returns:
-        List[html.Div]:
-            A list of Dash components to be rendered in the 'container'.
+        A list of Dash components to be rendered in the 'container'.
 
     Raises:
-        PreventUpdate:
-            If data['count'] is 0, preventing unnecessary updates.
+        PreventUpdate: If data['count'] is 0, preventing unnecessary updates.
 
     Components created:
     - Range sliders for level 1, 2, and 3 items
@@ -420,11 +417,10 @@ def update_click_data_display(
     updates the iframe source and style based on the click data.
 
     Args:
-        click_data (Union[Dict[str, Any], None]):
-            The click event data from the treemap.
+        click_data: The click event data from the treemap.
             If None, no data point has been clicked.
-        checklist (str): The selected value from the checklist.
-        iframe_style (Dict[str, Any]): The style dictionary for the iframe.
+        checklist: The selected value from the checklist.
+        iframe_style: The style dictionary for the iframe.
 
     Returns:
         tuple: Contains the following elements:
@@ -433,8 +429,7 @@ def update_click_data_display(
             - str: The src URL for the iframe.
             - Dict[str, Any]: The updated style dictionary for the iframe.
             - Dict[str, int]: The md size for the column containing the graph.
-            - Dict[str, str]:
-                The style dictionary for the column containing the iframe.
+            - Dict[str, str]: The style dictionary for the iframe column.
     """
     if click_data is None:
         raise PreventUpdate
@@ -470,33 +465,28 @@ def update_click_data_display(
 
 @callback(
     Output({'type': 'slider_1', 'index': MATCH}, 'max'),
-    Output({'type': 'accordion_item', 'index': MATCH}, 'style'),
+    Output({'type': 'div_item', 'index': MATCH}, 'style'),
     Input({'type': 'treemap', 'index': MATCH}, 'figure'),
-    State({'type': 'store_len_lev_1', 'index': MATCH}, 'data'),
-    State('checklist', 'value')
+    State({'type': 'store_len_lev_1', 'index': MATCH}, 'data')
 )
-def update_accordion_and_slider_based_on_treemap(
-        _: Any, store: int, _checklist: str
-) -> Tuple[int, Dict[str, Any], str, str, str]:
+def update_div_and_slider_based_on_treemap(
+    _treemap_figure: Any,
+    store: int
+) -> Tuple[int, Dict[str, str]]:
     """
-    Update accordion items and range slider based on treemap selection.
+    Update div items and range slider based on treemap selection.
 
-    This function updates the maximum value of a range slider, the visibility
-    of an accordion item, and the titles of two accordion items. It uses the
-    selected checklist value to determine the appropriate graph object class.
+    This function updates the maximum value of a range slider and the
+    visibility of an div item.
 
     Args:
-        _ (Any): Placeholder for unused treemap figure input.
+        _treemap_figure (Any): Placeholder for unused treemap figure input.
         store (int): The maximum value for the range slider.
-        checklist (str): The selected value from the checklist.
 
     Returns:
         tuple: Contains the following elements:
             - int: Maximum value for the range slider.
-            - dict: Style dictionary for accordion item visibility.
-            - str: Title for the main accordion item.
-            - str: Title for the theme accordion item.
-            - str: Title for the options accordion item.
+            - dict: Style dictionary for div item visibility.
     """
     return store, {'display': ''}
 

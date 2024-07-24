@@ -1,4 +1,28 @@
-"""Graph Objects Explorer"""
+"""
+Graph Objects Explorer
+
+This module provides a Dash application page for exploring Plotly Graph
+Objects. It allows users to interactively visualize and explore the structure
+of various Plotly graph objects through a treemap representation.
+
+Key features:
+- Dynamic treemap visualization of Plotly graph objects
+- Interactive filtering of treemap levels using range sliders
+- Sorting option for treemap items
+- Theme switching between light and dark modes
+- Clickable treemap nodes that display corresponding documentation in an iframe
+
+The module includes several components:
+- Layout definition for the Graph Objects Explorer page
+- Callback functions for updating the treemap, handling user interactions,
+  and managing the display of documentation
+- Utility functions for creating UI components like labeled range sliders
+  and accordions
+
+This page is part of a larger Dash application and is registered using the
+Dash `register_page` function.
+"""
+
 from typing import Any, Dict, List, Tuple
 from dash import register_page
 from dash import html, dcc, callback, MATCH

@@ -29,7 +29,7 @@ accordionitem_style = {"border": "2px solid #abc", "border-radius": "5px"}
 
 accordion_style = {"width": "100%", "margin": "5px auto"}
 
-radioitems_style = {"max-height": "200px", "overflow-y": "auto"}
+radioitems_style = {"max-height": "400px", "overflow-y": "auto"}
 
 CENTER_DIV_CONTENT = \
     "d-flex flex-column justify-content-center align-items-center h-100"
@@ -38,7 +38,7 @@ CENTER_CLASS_NAME = "d-flex justify-content-center align-items-center"
 
 CENTER_BOTTOM_CLASS_NAME = "d-flex justify-content-center align-items-end"
 
-GLOBAL_STYLE = {"font-family": "Roboto, sans-serif"}
+GLOBAL_STYLE = {"font-family": "Roboto"}
 
 
 def style_accordionitem_title(title: str, font_size: int = 24):

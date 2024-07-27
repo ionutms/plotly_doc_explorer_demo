@@ -33,20 +33,18 @@ import plotly.graph_objects as go
 import pages.utils.fig_utils as fig_u
 import pages.utils.web_utils as web_u
 import pages.utils.style_utils as styles
+import pages.utils.struc_utils as struc
 
 link_name = __name__.rsplit('.', maxsplit=1)[-1].replace('_page', '').title()
 
 register_page(__name__, name=link_name, order=0)
 
-
 # ================= GRAPH OBJECTS EXPLORER PAGE ==== LAYOUT SECTION START ====
 
 MAIN_DIV_CHILDREN = [
     dbc.Row([dbc.Col([dcc.Link('Go back Home', href='/'),])]),
-    dbc.Row([dbc.Col([
-        html.H1(f"This is the '{link_name}' page", style=styles.heading_style)
-    ])]),
-    html.Hr(),
+    dbc.Row([dbc.Col([html.H3(f"This is the '{link_name}' page")])]),
+    dbc.Row([struc.app_description(), html.Hr(),]),
     dbc.Row([dbc.Col([dbc.RadioItems(
         options=[
             {"label": key, "value": key}
@@ -60,7 +58,8 @@ MAIN_DIV_CHILDREN = [
     html.Div(id='container'),
 ]
 
-layout = dbc.Container([html.Div(MAIN_DIV_CHILDREN)], fluid=True)
+layout = dbc.Container(
+    [html.Div(MAIN_DIV_CHILDREN, style=styles.GLOBAL_STYLE)], fluid=True)
 
 
 def create_labeled_range_slider_column(

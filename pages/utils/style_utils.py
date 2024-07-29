@@ -23,7 +23,7 @@ Functions:
 
 from dash import html
 
-heading_style = {"font-size": "30px", "font-weight": "bold"}
+heading_3_style = {"font-size": "30px", "font-weight": "bold"}
 
 accordionitem_style = {"border": "2px solid #abc", "border-radius": "5px"}
 

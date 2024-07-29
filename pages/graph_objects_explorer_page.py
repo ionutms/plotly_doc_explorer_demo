@@ -43,7 +43,9 @@ register_page(__name__, name=link_name, order=0)
 
 MAIN_DIV_CHILDREN = [
     dbc.Row([dbc.Col([dcc.Link('Go back Home', href='/'),])]),
-    dbc.Row([dbc.Col([html.H3(f"This is the '{link_name}' page")])]),
+    dbc.Row([dbc.Col([html.H3(
+        f"{link_name.replace('_', ' ')}",
+        style=styles.heading_3_style)])]),
     dbc.Row([struc.app_description(), html.Hr(),]),
     dbc.Row([dbc.Col([dbc.RadioItems(
         options=[

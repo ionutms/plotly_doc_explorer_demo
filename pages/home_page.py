@@ -1,4 +1,9 @@
-"""Home"""
+"""Home page module for the Dash application.
+
+This module defines the layout and callback for the home page of the Dash app.
+It displays a title and dynamically generates links to other pages in the app.
+"""
+
 import dash
 from dash import html, dcc, Input, Output, callback
 import dash_bootstrap_components as dbc
@@ -8,13 +13,11 @@ link_name = __name__.rsplit('.', maxsplit=1)[-1].replace('_page', '').title()
 
 dash.register_page(__name__, name=link_name, path='/')
 
-layout = dbc.Container([
-    html.Div([
-        html.H1(
-            f"This is the '{__name__.rsplit('.', 1)[-1]}' page",
-            style=styles.heading_style),
-        html.Div(id='links_display'),
-    ])
+layout = dbc.Container([html.Div([
+    dbc.Row([dbc.Col([html.H3(
+        f"{link_name.replace('_', ' ')}", style=styles.heading_3_style)])]),
+    html.Div(id='links_display'),
+], style=styles.GLOBAL_STYLE)
 ], fluid=True)
 
 
@@ -22,11 +25,30 @@ layout = dbc.Container([
     Output('links_display', 'children'),
     Input('links_store', 'data')
 )
-def display_links(links):
-    """Display links."""
+def display_links(links: list[dict] | None) -> html.Div | str:
+    """
+    Generate and display links based on the provided data.
+
+    This callback function creates a list of links to be displayed on the home
+    page. It uses the data stored in the 'links_store' to dynamically generate
+    these links.
+
+    Args:
+        links (list[dict] | None): A list of dictionaries containing link
+            information. Each dictionary should have 'name' and 'path' keys.
+            If None, a loading message is returned.
+
+    Returns:
+        html.Div | str: A Div containing Link components for each link in the
+        input, or a string with a loading message if no links are provided.
+
+    Note:
+        The function excludes the last link in the list when creating the Div.
+    """
     if not links:
         return "Loading links..."
 
     return html.Div([
         html.Div(dcc.Link(link['name'], href=link['path']))
-        for link in links][:-1])
+        for link in links
+    ][:-1])

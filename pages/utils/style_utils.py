@@ -34,11 +34,14 @@ radioitems_style = {"max-height": "400px", "overflow-y": "auto"}
 CENTER_DIV_CONTENT = \
     "d-flex flex-column justify-content-center align-items-center h-100"
 
-CENTER_CLASS_NAME = "d-flex justify-content-center align-items-center"
+CENTER_CLASS_NAME = "w-100 d-flex justify-content-center align-items-center"
 
 CENTER_BOTTOM_CLASS_NAME = "d-flex justify-content-center align-items-end"
 
 GLOBAL_STYLE = {"font-family": "Roboto"}
+
+FLEX_CENTER_COLUMN = \
+    "d-flex flex-column justify-content-center align-items-center"
 
 
 def style_accordionitem_title(title: str, font_size: int = 24):

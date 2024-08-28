@@ -33,11 +33,34 @@ import plotly.graph_objects as go
 import pages.utils.fig_utils as fig_u
 import pages.utils.web_utils as web_u
 import pages.utils.style_utils as styles
-import pages.utils.struc_utils as struc
+import pages.utils.dash_component_utils as dcu
 
 link_name = __name__.rsplit('.', maxsplit=1)[-1].replace('_page', '').title()
 
 register_page(__name__, name=link_name, order=0)
+
+TITLE = "Graph Objects Explorer"
+ABOUT = (
+    "The Graph Objects Explorer is an interactive tool for visualizing "
+    "and exploring the structure of Plotly graph objects.",
+    "It provides a dynamic treemap representation of graph object "
+    "properties and allows users to filter and navigate through "
+    "different levels of detail."
+)
+features = [
+    "Dynamic treemap visualization of Plotly graph objects",
+    "Interactive filtering of treemap levels using range sliders",
+    "Option to sort treemap items",
+    "Clickable treemap nodes with corresponding documentation display",
+    "Theme switching between light and dark modes"
+]
+usage_steps = [
+    "Select a graph object from the radio bottom list.",
+    "Use the range sliders to filter items at each levels of the treemap.",
+    "Toggle the switch to change the ordering of items in the treemap.",
+    "Click on treemap nodes to view the corresponding documentation.",
+    "Use the theme switch to toggle between light and dark modes."
+]
 
 # ================= GRAPH OBJECTS EXPLORER PAGE ==== LAYOUT SECTION START ====
 
@@ -46,7 +69,8 @@ MAIN_DIV_CHILDREN = [
     dbc.Row([dbc.Col([html.H3(
         f"{link_name.replace('_', ' ')}",
         style=styles.heading_3_style)])]),
-    dbc.Row([struc.app_description(), html.Hr(),]),
+    dbc.Row([
+        dcu.app_description(TITLE, ABOUT, features, usage_steps), html.Hr()]),
     dbc.Row([dbc.Col([dbc.RadioItems(
         options=[
             {"label": key, "value": key}
@@ -55,7 +79,7 @@ MAIN_DIV_CHILDREN = [
         style=styles.radioitems_style
     ),
     ])]),
-    dcc.Store(id='store', data={'count': 0}),
+    dcc.Store(id='store', data={"max_count": 0}),
     html.Hr(),
     html.Div(id='container'),
 ]
@@ -242,7 +266,7 @@ def reset_store_count_on_checklist_change(
             Otherwise, the original data is returned unchanged.
     """
     if checklist:
-        data['count'] = 1
+        data["max_count"] = 1
     return data
 
 
@@ -277,7 +301,7 @@ def display_components(data: Dict[str, Any]) -> List[html.Div]:
     - iframe for displaying additional content
     """
     children: List[html.Div] = []
-    if data['count'] == 0:
+    if data["max_count"] == 0:
         raise PreventUpdate
 
     children.append(html.Div([

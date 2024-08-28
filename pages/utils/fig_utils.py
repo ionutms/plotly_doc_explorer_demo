@@ -1,4 +1,25 @@
-"""Figure utils"""
+"""
+Figure Utilities for Plotly
+
+This module provides utility functions and constants for creating and
+manipulating Plotly figures. It includes:
+
+- Constants for graph configuration and color scales
+- A default figure template
+- Functions for building hierarchical structures of Plotly objects
+- A dictionary of Plotly graph object information
+
+Main functions:
+    find_last_options: Find and add last options to the tree structure
+    find_mid_options: Find and add middle options to the tree structure
+    find_first_options: Find first options and initialize the tree structure
+    keys_search: Search keys in a hierarchical structure
+    create_go_info_item: Generate a sub-dictionary for a Plotly graph object
+
+The module is designed to assist in the creation and customization of Plotly
+figures, providing tools for exploring and manipulating Plotly object
+structures.
+"""
 
 import inspect
 from typing import Any, Dict, List, Optional, Tuple

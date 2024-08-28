@@ -41,7 +41,6 @@ from dash.dependencies import ALL, MATCH, Input, Output, State
 import dash_bootstrap_components as dbc
 
 import pages.utils.style_utils as styles
-import pages.utils.signal_processing_utils as spu
 
 
 def labeled_range_slider(
@@ -294,39 +293,6 @@ def callback_labeled_counter_quintet(
 
         return round(
             float(max(min(current, max_count), min_count)), decimal_places)
-
-
-def extract_info_from_zip_as_int(
-    contents: str,
-    file_name: str,
-    search_key: str
-) -> int:
-    """
-    Extract information from a ZIP file and return it as an integer.
-
-    This function uses the `extract_info_from_zip` function to extract
-    information based on a given search key from a ZIP file's contents.
-    It then converts the first extracted value to an integer.
-
-    Args:
-        contents (str): Base64 encoded string of the ZIP file contents.
-        search_key (str): The key to search for in the ZIP file's CSV contents.
-
-    Returns:
-        int: The first extracted value converted to an integer.
-
-    Raises:
-        ValueError: If the extracted value cannot be converted to an integer.
-        IndexError: If no value is found for the given search key.
-
-    Note:
-        This function assumes that the `extract_info_from_zip` function returns
-        a dictionary where values are either strings or lists of strings.
-    """
-    if file_name.lower().endswith('.zip'):
-        return int(next(iter(spu.extract_info_from_zip(
-            contents, [search_key]).values())))
-    return no_update
 
 
 def callback_update_store_at_upload(

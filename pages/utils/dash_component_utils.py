@@ -44,11 +44,11 @@ import pages.utils.style_utils as styles
 
 
 def labeled_range_slider(
-        id_section: str,
-        label: str,
-        default_value: List[int],
-        min_value: int = 1,
-        md=9,
+    id_section: str,
+    label: str,
+    default_value: List[int],
+    min_value: int = 1,
+    md=9,
 ) -> dbc.Col:
     """Create a labeled range slider column.
 
@@ -64,23 +64,36 @@ def labeled_range_slider(
     Returns:
         dbc.Col: Dash Bootstrap column containing the labeled range slider.
     """
-    labeled_range_slider_column = dbc.Col([
-        dbc.Label(label, className=styles.CENTER_CLASS_NAME),
-        dcc.RangeSlider(
-            id=f"{id_section}_range_slider", min=min_value,
-            value=default_value, pushable=1, step=1, marks=None, tooltip={
-                "placement": "topLeft", "always_visible": False,
-                "style": {"fontSize": "12px"}}),
-        html.Br()], xs=12, md=md)
+    labeled_range_slider_column = dbc.Col(
+        [
+            dbc.Label(label, className=styles.CENTER_CLASS_NAME),
+            dcc.RangeSlider(
+                id=f"{id_section}_range_slider",
+                min=min_value,
+                value=default_value,
+                pushable=1,
+                step=1,
+                marks=None,
+                tooltip={
+                    "placement": "topLeft",
+                    "always_visible": False,
+                    "style": {"fontSize": "12px"},
+                },
+            ),
+            html.Br(),
+        ],
+        xs=12,
+        md=md,
+    )
     return labeled_range_slider_column
 
 
 def labeled_counter_trio(
-        id_section: str,
-        label: str,
-        limits: Dict[str, float],
-        default_count: int = 1,
-        md: int = 3
+    id_section: str,
+    label: str,
+    limits: Dict[str, float],
+    default_count: int = 1,
+    md: int = 3,
 ) -> dbc.Col:
     """Create a labeled button group for incrementing and decrementing a count.
 
@@ -97,30 +110,47 @@ def labeled_counter_trio(
         dbc.Col:
             Bootstrap column containing the label and counter button group.
     """
-    counter_button_group = dbc.Col([
-        dcc.Store(id=f'{id_section}_store', data=limits),
-        dbc.Label(
-            children=label, id=f'{id_section}_label',
-            className=styles.CENTER_CLASS_NAME),
-        dbc.ButtonGroup([
-            dbc.Button(
-                "<", id=f'{id_section}_decrement_button',
-                outline=False, color="secondary"),
-            dbc.Button(
-                f"{default_count}", id=f'{id_section}_button',
-                outline=False, color="secondary", disabled=True),
-            dbc.Button(
-                ">", id=f'{id_section}_increment_button',
-                outline=False, color="secondary")
-        ], className="d-flex flex-wrap"),
-        html.Br()], xs=12, md=md)
+    counter_button_group = dbc.Col(
+        [
+            dcc.Store(id=f"{id_section}_store", data=limits),
+            dbc.Label(
+                children=label,
+                id=f"{id_section}_label",
+                className=styles.CENTER_CLASS_NAME,
+            ),
+            dbc.ButtonGroup(
+                [
+                    dbc.Button(
+                        "<",
+                        id=f"{id_section}_decrement_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                    dbc.Button(
+                        f"{default_count}",
+                        id=f"{id_section}_button",
+                        outline=False,
+                        color="secondary",
+                        disabled=True,
+                    ),
+                    dbc.Button(
+                        ">",
+                        id=f"{id_section}_increment_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                ],
+                className="d-flex flex-wrap",
+            ),
+            html.Br(),
+        ],
+        xs=12,
+        md=md,
+    )
     return counter_button_group
 
 
-def callback_labeled_counter_trio(
-    base_id: str,
-    resolution: int = 1
-) -> None:
+def callback_labeled_counter_trio(base_id: str, resolution: int = 1) -> None:
     """Generate a Dash callback for incrementing and decrementing a count.
 
     Args:
@@ -131,19 +161,20 @@ def callback_labeled_counter_trio(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_decrement_button', 'n_clicks'),
-        Input(f'{base_id}_increment_button', 'n_clicks'),
-        State(f'{base_id}_store', 'data'),
-        State(f'{base_id}_button', 'children'),
-        prevent_initial_call=True
+        Output(f"{base_id}_button", "children"),
+        Input(f"{base_id}_decrement_button", "n_clicks"),
+        Input(f"{base_id}_increment_button", "n_clicks"),
+        State(f"{base_id}_store", "data"),
+        State(f"{base_id}_button", "children"),
+        prevent_initial_call=True,
     )
     def labeled_counter_trio_callback(
         _decrement: int,
         _increment: int,
         stored_data: Dict[str, Any],
-        current_count: str
+        current_count: str,
     ) -> Union[int, Any]:
         """
         Updates the count when increment/decrement buttons are clicked.
@@ -167,20 +198,20 @@ def callback_labeled_counter_trio(
         except (KeyError, ValueError):
             return no_update
 
-        if ctx.triggered_id == f'{base_id}_decrement_button':
+        if ctx.triggered_id == f"{base_id}_decrement_button":
             current -= resolution
-        elif ctx.triggered_id == f'{base_id}_increment_button':
+        elif ctx.triggered_id == f"{base_id}_increment_button":
             current += resolution
 
         return max(min(current, max_count), min_count)
 
 
 def labeled_counter_quintet(
-        id_section: str,
-        label: str,
-        limits: Dict[str, float],
-        default_count: int = 1,
-        md: int = 3
+    id_section: str,
+    label: str,
+    limits: Dict[str, float],
+    default_count: int = 1,
+    md: int = 3,
 ) -> dbc.Col:
     """Create a labeled button group with five buttons for count manipulation.
 
@@ -197,37 +228,62 @@ def labeled_counter_quintet(
         dbc.Col:
             Bootstrap column containing the label and counter button group.
     """
-    counter_button_group = dbc.Col([
-        dcc.Store(id=f'{id_section}_store', data=limits),
-        dbc.Label(
-            children=label, id=f'{id_section}_label',
-            className=styles.CENTER_CLASS_NAME
-        ),
-        dbc.ButtonGroup([
-            dbc.Button(
-                "<<", id=f'{id_section}_divide_button',
-                outline=False, color="secondary"),
-            dbc.Button(
-                "<", id=f'{id_section}_decrement_button',
-                outline=False, color="secondary"),
-            dbc.Button(
-                f"{default_count}", id=f'{id_section}_button',
-                outline=False, color="secondary", disabled=True),
-            dbc.Button(
-                ">", id=f'{id_section}_increment_button',
-                outline=False, color="secondary"),
-            dbc.Button(
-                ">>", id=f'{id_section}_multiply_button',
-                outline=False, color="secondary"),
-        ], className="d-flex flex-wrap"),
-        html.Br()], xs=12, md=md)
+    counter_button_group = dbc.Col(
+        [
+            dcc.Store(id=f"{id_section}_store", data=limits),
+            dbc.Label(
+                children=label,
+                id=f"{id_section}_label",
+                className=styles.CENTER_CLASS_NAME,
+            ),
+            dbc.ButtonGroup(
+                [
+                    dbc.Button(
+                        "<<",
+                        id=f"{id_section}_divide_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                    dbc.Button(
+                        "<",
+                        id=f"{id_section}_decrement_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                    dbc.Button(
+                        f"{default_count}",
+                        id=f"{id_section}_button",
+                        outline=False,
+                        color="secondary",
+                        disabled=True,
+                    ),
+                    dbc.Button(
+                        ">",
+                        id=f"{id_section}_increment_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                    dbc.Button(
+                        ">>",
+                        id=f"{id_section}_multiply_button",
+                        outline=False,
+                        color="secondary",
+                    ),
+                ],
+                className="d-flex flex-wrap",
+            ),
+            html.Br(),
+        ],
+        xs=12,
+        md=md,
+    )
     return counter_button_group
 
 
 def callback_labeled_counter_quintet(
     base_id: str,
     resolution: Union[int, float],
-    decimal_places: Union[int, None] = None
+    decimal_places: Union[int, None] = None,
 ) -> None:
     """
     Creates a Dash callback for incrementing and decrementing a count.
@@ -240,15 +296,16 @@ def callback_labeled_counter_quintet(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_divide_button', 'n_clicks'),
-        Input(f'{base_id}_decrement_button', 'n_clicks'),
-        Input(f'{base_id}_increment_button', 'n_clicks'),
-        Input(f'{base_id}_multiply_button', 'n_clicks'),
-        State(f'{base_id}_store', 'data'),
-        State(f'{base_id}_button', 'children'),
-        prevent_initial_call=True
+        Output(f"{base_id}_button", "children"),
+        Input(f"{base_id}_divide_button", "n_clicks"),
+        Input(f"{base_id}_decrement_button", "n_clicks"),
+        Input(f"{base_id}_increment_button", "n_clicks"),
+        Input(f"{base_id}_multiply_button", "n_clicks"),
+        State(f"{base_id}_store", "data"),
+        State(f"{base_id}_button", "children"),
+        prevent_initial_call=True,
     )
     def labeled_counter_quintet_callback(
         _divide: int,
@@ -256,7 +313,7 @@ def callback_labeled_counter_quintet(
         _increment: int,
         _multiply: int,
         stored_data: Dict[str, Any],
-        current_count: str
+        current_count: str,
     ) -> Union[float, Any]:
         """
         Updates the count when increment/decrement buttons are clicked.
@@ -282,17 +339,18 @@ def callback_labeled_counter_quintet(
         except (KeyError, ValueError):
             return no_update
 
-        if ctx.triggered_id == f'{base_id}_divide_button':
+        if ctx.triggered_id == f"{base_id}_divide_button":
             current /= 10
-        elif ctx.triggered_id == f'{base_id}_decrement_button':
+        elif ctx.triggered_id == f"{base_id}_decrement_button":
             current -= resolution
-        elif ctx.triggered_id == f'{base_id}_increment_button':
+        elif ctx.triggered_id == f"{base_id}_increment_button":
             current += resolution
-        elif ctx.triggered_id == f'{base_id}_multiply_button':
+        elif ctx.triggered_id == f"{base_id}_multiply_button":
             current *= 10
 
         return round(
-            float(max(min(current, max_count), min_count)), decimal_places)
+            float(max(min(current, max_count), min_count)), decimal_places
+        )
 
 
 def callback_update_store_at_upload(
@@ -300,7 +358,7 @@ def callback_update_store_at_upload(
     upload_id: str,
     store_id: str,
     process: Callable,
-    search_key: str | None = None
+    search_key: str | None = None,
 ) -> None:
     """
     Create a callback function to update a store when a ZIP file is uploaded.
@@ -317,14 +375,15 @@ def callback_update_store_at_upload(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_store', 'data'),
-        Output(f'{base_id}_range_slider', 'marks'),
-        Input(f'{upload_id}', 'contents'),
-        State(f'{upload_id}', 'filename'),
-        State(f'{store_id}', 'data'),
-        State(f'{base_id}_store', 'data'),
-        prevent_initial_call=True
+        Output(f"{base_id}_store", "data"),
+        Output(f"{base_id}_range_slider", "marks"),
+        Input(f"{upload_id}", "contents"),
+        State(f"{upload_id}", "filename"),
+        State(f"{store_id}", "data"),
+        State(f"{base_id}_store", "data"),
+        prevent_initial_call=True,
     )
     def update_count_from_zip(
         contents: str,
@@ -351,27 +410,23 @@ def callback_update_store_at_upload(
             PreventUpdate: If the uploaded file is not a ZIP file.
         """
 
-        if filename.lower().endswith('.zip'):
+        if filename.lower().endswith(".zip"):
             if process.__name__ == "extract_info_from_zip_as_int":
-                store['max_count'] = process(contents, filename, search_key)
+                store["max_count"] = process(contents, filename, search_key)
                 return store, None
             if process.__name__ == "count_csv_files_from_zip":
-                store['max_count'] = process(contents)
+                store["max_count"] = process(contents)
                 return store, None
             if process.__name__ == "extract_data_frame_from_zip_contents":
                 names = process(contents, filename, global_store)
-                store['max_count'] = len(names)
+                store["max_count"] = len(names)
                 marks = dict(enumerate(names, 1))
                 return store, marks
         return no_update, no_update
 
 
 def create_labeled_input(
-    id_section: str,
-    label: str,
-    placeholder: str,
-    value: Any,
-    md: int = 3
+    id_section: str, label: str, placeholder: str, value: Any, md: int = 3
 ) -> dbc.Col:
     """Create a labeled input column.
 
@@ -385,21 +440,26 @@ def create_labeled_input(
     Returns:
         A Bootstrap column containing a labeled input and horizontal rule.
     """
-    labeled_input_column = dbc.Col([
-        dbc.Label(label, className=styles.CENTER_CLASS_NAME),
-        dbc.Input(
-            id=id_section, type="text", placeholder=placeholder,
-            value=value, className="d-flex flex-wrap"),
-        html.Br(),
-    ], xs=12, md=md)
+    labeled_input_column = dbc.Col(
+        [
+            dbc.Label(label, className=styles.CENTER_CLASS_NAME),
+            dbc.Input(
+                id=id_section,
+                type="text",
+                placeholder=placeholder,
+                value=value,
+                className="d-flex flex-wrap",
+            ),
+            html.Br(),
+        ],
+        xs=12,
+        md=md,
+    )
     return labeled_input_column
 
 
 def create_labeled_button(
-    id_section: str,
-    label: str,
-    button_label: str,
-    md: int = 6
+    id_section: str, label: str, button_label: str, md: int = 6
 ) -> dbc.Col:
     """Create a labeled button column.
 
@@ -412,21 +472,29 @@ def create_labeled_button(
     Returns:
         A Bootstrap column containing a labeled button and horizontal rule.
     """
-    labeled_button_column = dbc.Col([
-        dbc.Label(
-            label, id=f'{id_section}_label',
-            className=styles.CENTER_CLASS_NAME),
-        dbc.Button(
-            button_label, id=f'{id_section}_button',
-            className=styles.CENTER_CLASS_NAME),
-        html.Br(),
-    ], xs=12, md=md)
+    labeled_button_column = dbc.Col(
+        [
+            dbc.Label(
+                label,
+                id=f"{id_section}_label",
+                className=styles.CENTER_CLASS_NAME,
+            ),
+            dbc.Button(
+                button_label,
+                id=f"{id_section}_button",
+                className=styles.CENTER_CLASS_NAME,
+            ),
+            html.Br(),
+        ],
+        xs=12,
+        md=md,
+    )
     return labeled_button_column
 
 
 def callback_update_range_slider_value(
-        base_id: str,
-        lock: int | None = None,
+    base_id: str,
+    lock: int | None = None,
 ) -> None:
     """
     Creates a Dash callback to update the range slider value.
@@ -437,15 +505,15 @@ def callback_update_range_slider_value(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_range_slider', 'value'),
-        Input(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_range_slider', 'value'),
-        prevent_initial_call=True
+        Output(f"{base_id}_range_slider", "value"),
+        Input(f"{base_id}_button", "children"),
+        Input(f"{base_id}_range_slider", "value"),
+        prevent_initial_call=True,
     )
     def update_range_slider_value(
-        current_count: str,
-        range_slider_input
+        current_count: str, range_slider_input
     ) -> List[int]:
         """
         Updates the range slider value based on the current count.
@@ -456,7 +524,7 @@ def callback_update_range_slider_value(
         Returns:
             A list of integers from 1 to the current count.
         """
-        if ctx.triggered_id == f'{base_id}_range_slider':
+        if ctx.triggered_id == f"{base_id}_range_slider":
             if lock is not None:
                 if range_slider_input[lock] != 1:
                     range_slider_input[lock] = 1
@@ -468,9 +536,7 @@ def callback_update_range_slider_value(
 
 
 def callback_update_range_slider_max_and_label(
-    base_id: str,
-    upload_id: str,
-    reset_value: int = 1
+    base_id: str, upload_id: str, reset_value: int = 1
 ) -> None:
     """Generate Dash callbacks to update range slider max value and label.
 
@@ -485,16 +551,16 @@ def callback_update_range_slider_max_and_label(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_label', 'children'),
-        Output(f'{base_id}_range_slider', 'max'),
-        Input(f'{base_id}_store', 'data'),
-        State(f'{base_id}_label', 'children'),
-        prevent_initial_call=True
+        Output(f"{base_id}_label", "children"),
+        Output(f"{base_id}_range_slider", "max"),
+        Input(f"{base_id}_store", "data"),
+        State(f"{base_id}_label", "children"),
+        prevent_initial_call=True,
     )
     def update_range_slider_max_and_label(
-        store: Dict[str, Any],
-        label: str
+        store: Dict[str, Any], label: str
     ) -> Tuple[str, int]:
         """Update UI components based on the number of detected files.
 
@@ -506,16 +572,17 @@ def callback_update_range_slider_max_and_label(
             A tuple containing the updated label text and new max slider value.
         """
         try:
-            new_label = label.replace(label.split(
-                ' ')[0], str(store["max_count"]))
+            new_label = label.replace(
+                label.split(" ")[0], str(store["max_count"])
+            )
             return new_label, store["max_count"]
         except KeyError:
             return label, 0
 
     @callback(
-        Output(f'{base_id}_button', 'children', allow_duplicate=True),
-        Input(f'{upload_id}', 'contents'),
-        prevent_initial_call=True
+        Output(f"{base_id}_button", "children", allow_duplicate=True),
+        Input(f"{upload_id}", "contents"),
+        prevent_initial_call=True,
     )
     def reset_labeled_counter_callback(_upload: str) -> int:
         """Reset the counter when an upload event occurs.
@@ -529,13 +596,11 @@ def callback_update_range_slider_max_and_label(
         return reset_value
 
     @callback(
-        Output(f'{base_id}_row', 'style'),
-        Input(f'{base_id}_store', 'data'),
-        prevent_initial_call=True
+        Output(f"{base_id}_row", "style"),
+        Input(f"{base_id}_store", "data"),
+        prevent_initial_call=True,
     )
-    def control_style(
-        store: Dict[str, Any]
-    ) -> Dict[str, str]:
+    def control_style(store: Dict[str, Any]) -> Dict[str, str]:
         """Control the visibility of the row based on max count.
 
         Args:
@@ -544,13 +609,14 @@ def callback_update_range_slider_max_and_label(
         Returns:
             A dictionary specifying the display style for the row.
         """
-        return {'display': 'none'} \
-            if store['max_count'] == 1 else {'display': ''}
+        return (
+            {"display": "none"}
+            if store["max_count"] == 1
+            else {"display": ""}
+        )
 
 
-def callback_update_range_slider_pushable_and_value(
-        base_id: str
-) -> None:
+def callback_update_range_slider_pushable_and_value(base_id: str) -> None:
     """Generate a callback to update range slider pushable property and value.
 
     Args:
@@ -559,16 +625,17 @@ def callback_update_range_slider_pushable_and_value(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
-        Output(f'{base_id}_range_slider', 'pushable'),
-        Output(f'{base_id}_range_slider', 'value'),
-        Input(f'{base_id}_button', 'children'),
-        State(f'{base_id}_range_slider', 'value'),
-        prevent_initial_call=True
+        Output(f"{base_id}_range_slider", "pushable"),
+        Output(f"{base_id}_range_slider", "value"),
+        Input(f"{base_id}_button", "children"),
+        State(f"{base_id}_range_slider", "value"),
+        prevent_initial_call=True,
     )
     def update_range_slider_pushable_and_value(
-            current_count: str,
-            slider_value: List[int],
+        current_count: str,
+        slider_value: List[int],
     ) -> Tuple[int, List[int]]:
         """
         Update range slider pushable and value based on button clicks.
@@ -588,7 +655,7 @@ def app_description(
     title: str,
     about: Tuple[str],
     features: Tuple[str],
-    usage_steps: Tuple[str]
+    usage_steps: Tuple[str],
 ) -> html.Div:
     """Create a description component for any app page.
 
@@ -602,31 +669,39 @@ def app_description(
     Returns:
         html.Div: A Div component containing the formatted app description.
     """
-    left_column_content: dbc.Col = dbc.Col([
-        html.H4("Key Features:"),
-        html.Ul([html.Li(feature) for feature in features])
-    ], xs=12, md=6)
+    left_column_content: dbc.Col = dbc.Col(
+        [
+            html.H4("Key Features:"),
+            html.Ul([html.Li(feature) for feature in features]),
+        ],
+        xs=12,
+        md=6,
+    )
 
-    right_column_content: dbc.Col = dbc.Col([
-        html.H4("How to Use:"),
-        html.Ol([html.Li(step) for step in usage_steps])
-    ], xs=12, md=6)
+    right_column_content: dbc.Col = dbc.Col(
+        [
+            html.H4("How to Use:"),
+            html.Ol([html.Li(step) for step in usage_steps]),
+        ],
+        xs=12,
+        md=6,
+    )
 
     description: html.Div = html.Div([
         html.Hr(),
-        html.H3(f"About the {title}"), *[
-            html.Div(content) if len(about) > 1
-            else html.Div(content) for content in about],
+        html.H3(f"About the {title}"),
+        *[
+            html.Div(content) if len(about) > 1 else html.Div(content)
+            for content in about
+        ],
         html.Hr(),
         dbc.Row([left_column_content, right_column_content]),
-        html.Hr()])
+        html.Hr(),
+    ])
     return description
 
 
-def callbacks_radioitems(
-    id_section: str,
-    row_id: str
-) -> None:
+def callbacks_radioitems(id_section: str, row_id: str) -> None:
     """Generate callbacks for radio items in a section.
 
     This function sets up three callback functions for handling radio items
@@ -640,15 +715,15 @@ def callbacks_radioitems(
     Returns:
         None. The function registers callbacks with the Dash app.
     """
+
     @callback(
         Output(row_id, "children"),
         Input(f"{id_section}_range_slider", "value"),
         State(f"{id_section}_range_slider", "marks"),
-        prevent_initial_call=True
+        prevent_initial_call=True,
     )
     def generate_radioitems(
-        values: List[int],
-        marks: Dict[str, str]
+        values: List[int], marks: Dict[str, str]
     ) -> List[dbc.Col]:
         """Generate radio items based on range slider values.
 
@@ -662,44 +737,90 @@ def callbacks_radioitems(
         columns = []
         y_axis_channels = [marks[str(position)] for position in values[1:]]
         options = [
-            {"label": f'y{index}' if index > 1 else 'y', "value": index}
-            for index, _ in enumerate(y_axis_channels, 1)]
+            {"label": f"y{index}" if index > 1 else "y", "value": index}
+            for index, _ in enumerate(y_axis_channels, 1)
+        ]
 
         for index, y_axis_data in enumerate(y_axis_channels[1:], 1):
-            columns.append(dbc.Col([dbc.Card([dbc.Row([
-                dbc.Col([
-                    dbc.Label(
-                        f"{y_axis_data} axis selection",
-                        id={'type': 'label selection', 'index': index},
-                        className=styles.CENTER_CLASS_NAME),
-                    dbc.RadioItems(
-                        options=options, value=options[0]["value"],
-                        id={'type': 'radioitems', 'index': index},
-                        className=styles.CENTER_CLASS_NAME, inline=True),
-                ], xs=10, md=10),
-                dbc.Col([
-                    dbc.Label(
-                        'Left', id={'type': 'label side', 'index': index}),
-                    dbc.Switch(
-                        id={'type': 'switch', 'index': index},
-                        value=False, className="d-flex justify-content-center")
-                ], xs=2, md=2, className=styles.FLEX_CENTER_COLUMN)
-            ])], body=True, style={
-                "border": "1px dashed", "border-radius": "10px",
-                "padding": "1px", "background-color": "transparent"}),
-                html.Br()], xs=12, md=4))
+            columns.append(
+                dbc.Col(
+                    [
+                        dbc.Card(
+                            [
+                                dbc.Row([
+                                    dbc.Col(
+                                        [
+                                            dbc.Label(
+                                                f"{y_axis_data} axis selection",
+                                                id={
+                                                    "type": "label selection",
+                                                    "index": index,
+                                                },
+                                                className=styles.CENTER_CLASS_NAME,
+                                            ),
+                                            dbc.RadioItems(
+                                                options=options,
+                                                value=options[0]["value"],
+                                                id={
+                                                    "type": "radioitems",
+                                                    "index": index,
+                                                },
+                                                className=styles.CENTER_CLASS_NAME,
+                                                inline=True,
+                                            ),
+                                        ],
+                                        xs=10,
+                                        md=10,
+                                    ),
+                                    dbc.Col(
+                                        [
+                                            dbc.Label(
+                                                "Left",
+                                                id={
+                                                    "type": "label side",
+                                                    "index": index,
+                                                },
+                                            ),
+                                            dbc.Switch(
+                                                id={
+                                                    "type": "switch",
+                                                    "index": index,
+                                                },
+                                                value=False,
+                                                className="d-flex justify-content-center",
+                                            ),
+                                        ],
+                                        xs=2,
+                                        md=2,
+                                        className=styles.FLEX_CENTER_COLUMN,
+                                    ),
+                                ])
+                            ],
+                            body=True,
+                            style={
+                                "border": "1px dashed",
+                                "border-radius": "10px",
+                                "padding": "1px",
+                                "background-color": "transparent",
+                            },
+                        ),
+                        html.Br(),
+                    ],
+                    xs=12,
+                    md=4,
+                )
+            )
 
         return columns
 
     @callback(
-        Output('filtering_store', 'data', allow_duplicate=True),
-        Input("legend_group_switch", 'value'),
-        Input('filtering_store', 'data'),
-        prevent_initial_call=True
+        Output("filtering_store", "data", allow_duplicate=True),
+        Input("legend_group_switch", "value"),
+        Input("filtering_store", "data"),
+        prevent_initial_call=True,
     )
     def update_filtering_store_2(
-        legend_group_switch: bool,
-        filtering: Dict[str, Any]
+        legend_group_switch: bool, filtering: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
         TODO
@@ -711,17 +832,17 @@ def callbacks_radioitems(
             return filtering
 
     @callback(
-        Output('filtering_store', 'data', allow_duplicate=True),
-        Output({'type': 'switch', 'index': ALL}, 'value'),
-        Input({'type': 'radioitems', 'index': ALL}, 'value'),
-        Input({'type': 'switch', 'index': ALL}, 'value'),
-        Input('filtering_store', 'data'),
-        prevent_initial_call=True
+        Output("filtering_store", "data", allow_duplicate=True),
+        Output({"type": "switch", "index": ALL}, "value"),
+        Input({"type": "radioitems", "index": ALL}, "value"),
+        Input({"type": "switch", "index": ALL}, "value"),
+        Input("filtering_store", "data"),
+        prevent_initial_call=True,
     )
     def update_filtering_store(
         radioitems_values: List[int],
         switch: List[bool],
-        filtering: Dict[str, Any]
+        filtering: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Update the filtering store based on radio item selections.
 
@@ -734,10 +855,12 @@ def callbacks_radioitems(
         """
         try:
             selection = {}
-            for index, key in enumerate(filtering['y_axis_data'][1:]):
+            for index, key in enumerate(filtering["y_axis_data"][1:]):
                 selection[key] = (
-                    f'y{radioitems_values[index]}'
-                    if radioitems_values[index] > 1 else 'y')
+                    f"y{radioitems_values[index]}"
+                    if radioitems_values[index] > 1
+                    else "y"
+                )
             filtering.update({"y_axis_selection": selection})
 
             def update_list(original_list):
@@ -748,7 +871,8 @@ def callbacks_radioitems(
                         value_states[value] = state
 
                 result = [
-                    (value, value_states[value]) for value, _ in original_list]
+                    (value, value_states[value]) for value, _ in original_list
+                ]
 
                 return result
 
@@ -756,12 +880,15 @@ def callbacks_radioitems(
                 if item == 1:
                     switch[index] = False
                 if item > 1:
-                    unzipped = list(zip(*update_list(
-                        list(zip(radioitems_values, switch)))))
+                    unzipped = list(
+                        zip(
+                            *update_list(list(zip(radioitems_values, switch)))
+                        )
+                    )
                     switch = [list(state) for state in unzipped][1]
 
             side = {}
-            for index, key in enumerate(filtering['y_axis_data'][1:]):
+            for index, key in enumerate(filtering["y_axis_data"][1:]):
                 side[key] = switch[index]
             filtering.update({"y_axis_side": side})
 
@@ -770,9 +897,9 @@ def callbacks_radioitems(
             return filtering, no_update
 
     @callback(
-        Output({'type': 'label side', 'index': MATCH}, 'children'),
-        Input({'type': 'switch', 'index': MATCH}, 'value'),
-        prevent_initial_call=True
+        Output({"type": "label side", "index": MATCH}, "children"),
+        Input({"type": "switch", "index": MATCH}, "value"),
+        prevent_initial_call=True,
     )
     def update_side_label(switch: bool) -> str:
         """Update the side label based on the switch value.
@@ -783,4 +910,4 @@ def callbacks_radioitems(
         Returns:
             The updated label text ('Right' or 'Left').
         """
-        return 'Right' if switch else 'Left'
+        return "Right" if switch else "Left"

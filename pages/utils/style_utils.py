@@ -31,8 +31,9 @@ accordion_style = {"width": "100%", "margin": "5px auto"}
 
 radioitems_style = {"max-height": "400px", "overflow-y": "auto"}
 
-CENTER_DIV_CONTENT = \
+CENTER_DIV_CONTENT = (
     "d-flex flex-column justify-content-center align-items-center h-100"
+)
 
 CENTER_CLASS_NAME = "w-100 d-flex justify-content-center align-items-center"
 
@@ -40,14 +41,20 @@ CENTER_BOTTOM_CLASS_NAME = "d-flex justify-content-center align-items-end"
 
 GLOBAL_STYLE = {"font-family": "Roboto"}
 
-FLEX_CENTER_COLUMN = \
+FLEX_CENTER_COLUMN = (
     "d-flex flex-column justify-content-center align-items-center"
+)
 
 
 def style_accordionitem_title(title: str, font_size: int = 24):
     """Style accordionitem title."""
     style_accordionitem_title_params = {
-        "font-size": f"{font_size}px", "font-weight": "bold",
-        "font-family": "Roboto", "text-align": "center",
-        "width": "100%", "margin": "0px auto", "padding": "0px"}
+        "font-size": f"{font_size}px",
+        "font-weight": "bold",
+        "font-family": "Roboto",
+        "text-align": "center",
+        "width": "100%",
+        "margin": "0px auto",
+        "padding": "0px",
+    }
     return html.H1(title, style=style_accordionitem_title_params)

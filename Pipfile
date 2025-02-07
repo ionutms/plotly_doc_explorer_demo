@@ -10,6 +10,7 @@ dash-bootstrap-templates = "*"
 ipywidgets = "*"
 beautifulsoup4 = "*"
 gunicorn = "*"
+anywidget = "*"
 
 [dev-packages]
 
